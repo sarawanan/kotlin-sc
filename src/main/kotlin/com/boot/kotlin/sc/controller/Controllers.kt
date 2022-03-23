@@ -1,9 +1,9 @@
 package com.boot.kotlin.sc.controller
 
-import com.boot.kotlin.sc.CartNotFoundException
-import com.boot.kotlin.sc.CustomerNotFoundException
-import com.boot.kotlin.sc.ProductNotFoundException
-import com.boot.kotlin.sc.QuantityNotAvailableException
+import com.boot.kotlin.sc.exception.CartNotFoundException
+import com.boot.kotlin.sc.exception.CustomerNotFoundException
+import com.boot.kotlin.sc.exception.ProductNotFoundException
+import com.boot.kotlin.sc.exception.QuantityNotAvailableException
 import com.boot.kotlin.sc.dto.RequestDto
 import com.boot.kotlin.sc.entity.*
 import org.springframework.beans.factory.annotation.Autowired

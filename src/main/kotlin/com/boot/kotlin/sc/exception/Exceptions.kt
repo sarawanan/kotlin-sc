@@ -1,4 +1,4 @@
-package com.boot.kotlin.sc
+package com.boot.kotlin.sc.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
