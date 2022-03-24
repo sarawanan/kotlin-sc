@@ -1,4 +1,4 @@
-package com.boot.kotlin.sc
+package com.boot.kotlin.sc.config
 
 import com.boot.kotlin.sc.entity.Customer
 import com.boot.kotlin.sc.entity.CustomerRepo
