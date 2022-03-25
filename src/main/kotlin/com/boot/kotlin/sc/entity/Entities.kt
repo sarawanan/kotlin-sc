@@ -11,15 +11,15 @@ class Product(
 )
 
 @Entity
-class Customer(
+class User(
     val name: String,
-    val address: String,
+    val password: String,
     @Id @GeneratedValue val id: Int? = null,
 )
 
 @Entity
 class Cart(
-    @OneToOne val customer: Customer,
+    @OneToOne val user: User,
     var totalPrice: Double,
     @OneToMany(cascade = [CascadeType.ALL])
     var cartItems: MutableList<CartItem>? = null,

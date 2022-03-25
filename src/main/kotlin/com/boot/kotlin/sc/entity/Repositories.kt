@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository
 interface ProductRepo : JpaRepository<Product, Int>
 
 @Repository
-interface CustomerRepo : JpaRepository<Customer, Int>
+interface UserRepo : JpaRepository<User, Int>
 
 @Repository
 interface CartRepo : JpaRepository<Cart, Int> {
-    fun findByCustomer(customer: Customer): Cart?
+    fun findByUser(user: User): Cart?
 }
 
 @Repository

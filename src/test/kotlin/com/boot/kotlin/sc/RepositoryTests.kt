@@ -13,7 +13,7 @@ import org.springframework.data.repository.findByIdOrNull
 class RepositoryTests @Autowired constructor(
     val entityManager: TestEntityManager,
     val productRepo: ProductRepo,
-    val customerRepo: CustomerRepo,
+    val userRepo: UserRepo,
     val cartRepo: CartRepo,
     val cartItemRepo: CartItemRepo,
 ) {
@@ -25,15 +25,15 @@ class RepositoryTests @Autowired constructor(
     }
 
     @Test
-    fun `test create and get the customer`() {
-        val savedCustomer = entityManager.persist(Customer("Sara", "Test address"))
-        val foundCustomer = customerRepo.findByIdOrNull(savedCustomer.id)
-        assertEquals(savedCustomer, foundCustomer)
+    fun `test create and get the user`() {
+        val savedUser = entityManager.persist(User("admin", "admin"))
+        val foundUser = userRepo.findByIdOrNull(savedUser.id)
+        assertEquals(savedUser, foundUser)
     }
 
     @Test
     fun `test create and get cart`() {
-        val savedCustomer = entityManager.persist(Customer("Sara", "Test address"))
+        val savedCustomer = entityManager.persist(User("admin", "admin"))
         val savedProduct = entityManager.persist(Product("Rice", 10, 100.00))
         val savedItem1 = entityManager.persist(CartItem(savedProduct.id!!, 2, savedProduct.price * 2))
         val savedCart = entityManager.persist(Cart(savedCustomer, 200.00, mutableListOf(savedItem1)))

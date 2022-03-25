@@ -3,7 +3,7 @@ package com.boot.kotlin.sc.controller
 import com.boot.kotlin.sc.dto.RequestDto
 import com.boot.kotlin.sc.entity.*
 import com.boot.kotlin.sc.exception.CartNotFoundException
-import com.boot.kotlin.sc.exception.CustomerNotFoundException
+import com.boot.kotlin.sc.exception.UserNotFoundException
 import com.boot.kotlin.sc.exception.ProductNotFoundException
 import com.boot.kotlin.sc.exception.QuantityNotAvailableException
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,26 +22,26 @@ class ProductController(@Autowired val productRepo: ProductRepo) {
 
 @RestController
 @RequestMapping("/api")
-class CustomerController(@Autowired val customerRepo: CustomerRepo) {
-    @PostMapping("/customer")
-    fun createCustomer(@RequestBody customer: Customer) = customerRepo.save(customer)
+class UserController(@Autowired val userRepo: UserRepo) {
+    @PostMapping("/user")
+    fun createUser(@RequestBody customer: User) = userRepo.save(customer)
 
-    @GetMapping("/customer")
-    fun getCustomers(): List<Customer> = customerRepo.findAll()
+    @GetMapping("/user")
+    fun getUser(): List<User> = userRepo.findAll()
 }
 
 @RestController
 @RequestMapping("/api")
 class CartController @Autowired constructor(
-    val customerRepo: CustomerRepo,
+    val userRepo: UserRepo,
     val productRepo: ProductRepo,
     val cartItemRepo: CartItemRepo,
     val cartRepo: CartRepo,
 ) {
-    @PostMapping("/cart/{customerId}")
-    fun createCart(@PathVariable customerId: Int): Cart {
-        val customer = customerRepo.findByIdOrNull(customerId) ?: throw CustomerNotFoundException("Customer Not Found!")
-        return cartRepo.findByCustomer(customer) ?: cartRepo.save(Cart(customer, 0.00))
+    @PostMapping("/cart/{userId}")
+    fun createCart(@PathVariable userId: Int): Cart {
+        val user = userRepo.findByIdOrNull(userId) ?: throw UserNotFoundException("User Not Found!")
+        return cartRepo.findByUser(user) ?: cartRepo.save(Cart(user, 0.00))
     }
 
     @PostMapping("/cart/{cartId}/add")

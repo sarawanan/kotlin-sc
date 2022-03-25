@@ -3,7 +3,7 @@ package com.boot.kotlin.sc
 import com.boot.kotlin.sc.dto.RequestDto
 import com.boot.kotlin.sc.entity.*
 import com.boot.kotlin.sc.exception.CartNotFoundException
-import com.boot.kotlin.sc.exception.CustomerNotFoundException
+import com.boot.kotlin.sc.exception.UserNotFoundException
 import com.boot.kotlin.sc.exception.ProductNotFoundException
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import org.junit.jupiter.api.Test
@@ -24,7 +24,7 @@ import java.util.*
 @WebMvcTest
 class ControllerTests @Autowired constructor(val mockMvc: MockMvc) {
     @MockBean
-    private lateinit var customerRepo: CustomerRepo
+    private lateinit var userRepo: UserRepo
 
     @MockBean
     private lateinit var productRepo: ProductRepo
@@ -58,43 +58,42 @@ class ControllerTests @Autowired constructor(val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `test create and get customer`() {
-        val customer = Customer("Sara", "Test address")
-        Mockito.`when`(customerRepo.save(Mockito.any()))
-            .thenReturn(customer)
-        mockMvc.perform(post("/api/customer")
+    fun `test create and get user`() {
+        val user = User("admin", "admin")
+        Mockito.`when`(userRepo.save(Mockito.any()))
+            .thenReturn(user)
+        mockMvc.perform(post("/api/user")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonMapper().writeValueAsString(customer)))
+            .content(jsonMapper().writeValueAsString(user)))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.name").value("Sara"))
+            .andExpect(jsonPath("$.name").value("admin"))
     }
 
     @Test
-    fun `test get all customers`() {
-        Mockito.`when`(customerRepo.findAll()).thenReturn(
-            listOf(Customer("Sara", "Test address"), Customer("Maha", "Address")))
-        mockMvc.perform(get("/api/customer"))
+    fun `test get all user`() {
+        Mockito.`when`(userRepo.findAll()).thenReturn(
+            listOf(User("admin", "admin"), User("user", "pass")))
+        mockMvc.perform(get("/api/user"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.[0].name").value("Sara"))
-            .andExpect(jsonPath("$.[1].address").value("Address"))
+            .andExpect(jsonPath("$.[0].name").value("admin"))
     }
 
     @Test
-    fun `test create cart with customer not found exception`() {
-        Mockito.`when`(customerRepo.findByIdOrNull(Mockito.anyInt()))
-            .thenThrow(CustomerNotFoundException("Customer Not Found!"))
+    fun `test create cart with user not found exception`() {
+        Mockito.`when`(userRepo.findByIdOrNull(Mockito.anyInt()))
+            .thenThrow(UserNotFoundException("User Not Found!"))
         mockMvc.perform(MockMvcRequestBuilders.post("/api/cart/1"))
             .andExpect(status().`is`(404))
     }
 
     @Test
-    fun `test create cart findByCustomer`() {
-        val customer = Optional.of(Customer("Sara", "address"))
-        Mockito.`when`(customerRepo.findById(Mockito.anyInt()))
-            .thenReturn(customer)
-        val cart = Cart(customer.get(), 200.00,
+    fun `test create cart findByUser`() {
+        val user = Optional.of(User("admin", "admin"))
+        Mockito.`when`(userRepo.findById(Mockito.anyInt()))
+            .thenReturn(user)
+        val cart = Cart(user.get(), 200.00,
             mutableListOf(CartItem(1, 10, 200.00)))
-        Mockito.`when`(cartRepo.findByCustomer(customer.get()))
+        Mockito.`when`(cartRepo.findByUser(user.get()))
             .thenReturn(cart)
         mockMvc.perform(MockMvcRequestBuilders.post("/api/cart/1"))
             .andExpect(status().isOk)
@@ -102,8 +101,8 @@ class ControllerTests @Autowired constructor(val mockMvc: MockMvc) {
 
     @Test
     fun `test create cart save`() {
-        val customer = Optional.of(Customer("Sara", "address"))
-        Mockito.`when`(customerRepo.findById(Mockito.anyInt()))
+        val customer = Optional.of(User("admin", "admin"))
+        Mockito.`when`(userRepo.findById(Mockito.anyInt()))
             .thenReturn(customer)
         val cart = Cart(customer.get(), 200.00,
             mutableListOf(CartItem(1, 10, 200.00)))
@@ -121,7 +120,7 @@ class ControllerTests @Autowired constructor(val mockMvc: MockMvc) {
 
     @Test
     fun `test get cart by id`() {
-        val customer = Optional.of(Customer("Sara", "address"))
+        val customer = Optional.of(User("admin", "admin"))
         val cart = Optional.of(Cart(customer.get(), 200.00,
             mutableListOf(CartItem(1, 10, 200.00))))
         Mockito.`when`(cartRepo.findById(Mockito.anyInt()))
@@ -143,7 +142,7 @@ class ControllerTests @Autowired constructor(val mockMvc: MockMvc) {
     @Test
     fun `test add to cart - product not found exception`() {
         val json = jsonMapper().writeValueAsString(RequestDto(1, 10))
-        val customer = Optional.of(Customer("Sara", "address"))
+        val customer = Optional.of(User("admin", "admin"))
         val cart = Optional.of(Cart(customer.get(), 200.00,
             mutableListOf(CartItem(1, 10, 200.00))))
         Mockito.`when`(cartRepo.findById(Mockito.anyInt()))
@@ -158,7 +157,7 @@ class ControllerTests @Autowired constructor(val mockMvc: MockMvc) {
     @Test
     fun `test add to cart - qty not available exception`() {
         val json = jsonMapper().writeValueAsString(RequestDto(1, 100))
-        val customer = Optional.of(Customer("Sara", "address", 1))
+        val customer = Optional.of(User("admin", "admin", 1))
         val product = Optional.of(Product("Rice", 10, 100.00, 1))
         val cart = Optional.of(Cart(customer.get(), 200.00,
             mutableListOf(CartItem(1, 10, 200.00))))
@@ -175,7 +174,7 @@ class ControllerTests @Autowired constructor(val mockMvc: MockMvc) {
     @Test
     fun `test add to cart`() {
         val json = jsonMapper().writeValueAsString(RequestDto(1, 5))
-        val customer = Optional.of(Customer("Sara", "address", 1))
+        val customer = Optional.of(User("admin", "admin", 1))
         val product = Optional.of(Product("Rice", 10, 100.00, 1))
         val cart = Optional.of(Cart(customer.get(), 200.00,
             mutableListOf(CartItem(1, 10, 200.00))))
@@ -188,7 +187,7 @@ class ControllerTests @Autowired constructor(val mockMvc: MockMvc) {
             .contentType(MediaType.APPLICATION_JSON)
             .content(json))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.customer.name").value("Sara"))
+            .andExpect(jsonPath("$.user.name").value("admin"))
             .andExpect(jsonPath("$.cartItems.[0].price").value(200.00))
             .andExpect(jsonPath("$.cartItems.[1].price").value(500.00))
             .andExpect(jsonPath("$.totalPrice").value(700))
